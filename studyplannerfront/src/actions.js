@@ -7,13 +7,12 @@ export const createAction = async ({ request }) => {
 
   const newPlan = {
     course: formData.get("course"),
-    hoursPerDay: formData.get("hours"),
+    hours: formData.get("hours"),
     completionDate: formData.get("completion_date"),
     goals: formData.get("goals"),
     details: formData.get("details"),
   };
 
-  // Send a request to the backend to create a study plan
   await fetch(URL + "/planner/", {
     method: "post",
     headers: {
@@ -22,22 +21,25 @@ export const createAction = async ({ request }) => {
     body: JSON.stringify(newPlan),
   });
 
-  // Redirect back to the index page
   return redirect("/");
 };
 
 export const updateAction = async ({ request, params }) => {
   const formData = await request.formData();
-  const id = params.id;
+  const id = params.id; // Ensure this is correctly passed in from the route parameters.
 
+  // Extract the updated plan data from the form data.
   const updatedPlan = {
-    course: formData.get("course"),
     goals: formData.get("goals"),
     details: formData.get("details"),
+    course: formData.get("course"),
+    hours: formData.get("hours"),
   };
 
-  // Send a request to the backend to update the study plan
-  await fetch(URL + `/planner/${id}/`, {
+  // Construct the URL to update the study plan.
+
+  const updateURL = `${URL}/planner/${id}/`; // Check if this matches your Django endpoint
+  await fetch(updateURL, {
     method: "put",
     headers: {
       "Content-Type": "application/json",
@@ -45,8 +47,8 @@ export const updateAction = async ({ request, params }) => {
     body: JSON.stringify(updatedPlan),
   });
 
-  // Redirect back to the study plan details page
-  return redirect(`/post/${id}`);
+  // Redirect back to the study plan details page.
+  return redirect("/");
 };
 
 export const deleteAction = async ({ params }) => {
